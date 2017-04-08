@@ -13,7 +13,7 @@ for i in sorted(bestStudent.keys(), reverse=True):
 print(bestStudentStr)
 
 
-outToFile=open('tworzonyplik.txt', mode = 'w', encoding='utf-8')
+outToFile=open('tworzonypliki.txt', mode = 'w', encoding='utf-8')
 outToFile.write(bestStudentStr)
 
 outToFile.close()
