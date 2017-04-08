@@ -10,10 +10,12 @@ class Card:
         self.rank = rank
 
     def __repr__(self):
+        """For debugging purposes"""
         return str(self.rank) + " " + str(self.suit)
 
     def __str__(self):
-        return str(self.rank) + str(self.suit)
+        """For displaying purposes"""
+        return (str(self.rank) + str(self.suit)).rjust(4)
 
 
 class Rank(Enum):
@@ -31,7 +33,7 @@ class Rank(Enum):
     KING = 13
     ACE = 15
 
-    def symbol(self):
+    def __str__(self):
         if self is Rank.JACK:
             return 'J'
         elif self is Rank.QUEEN:
@@ -41,7 +43,12 @@ class Rank(Enum):
         elif self is Rank.ACE:
             return 'A'
         else:
+            # for all other ranks, the display string is equal to the enum value
             return str(self.value)
+
+    def is_followed_by(self, other_rank):
+        """True iff other_rank is one higher than self"""
+        return self.value + 1 == other_rank.value
 
 
 class Suit(Enum):
@@ -50,7 +57,7 @@ class Suit(Enum):
     DIAMONDS = 3
     HEARTS = 4
 
-    def symbol(self):
+    def __str__(self):
         if self is Suit.CLUBS:
             return '♣'
         elif self is Suit.SPADES:
@@ -70,15 +77,23 @@ class Suit(Enum):
         return suit.is_red() if self.is_black() else suit.is_black()
 
 
-test_card = Card(Rank.THREE, Suit.CLUBS)
-
-
-def main():
-    deck = make_deck()
-    stacks = make_stacks()
+def show_stacks(stacks):
+    """Returns standard repr of the seven stacks, each laid out vertically."""
+    lines = []
+    max_stack_len = max(len(s) for s in stacks)  # this is how many rows we need
+    for i in range(max_stack_len):  # iteration of this loop corresponds to a row of text
+        line = ''
+        for j in range(7):  # to build the row, we take one card from each stack, if the stack has at least i cards
+            if len(stacks[j]) > i:
+                line += str(stacks[j][i])
+            else:
+                line += '    '  # placeholder for alignment
+        lines.append(line)
+    return lines
 
 
 def make_stacks(deck):
+    """Note: this methods mutates `deck`"""
     return [[deck.pop() for _ in range(i)] for i in range(1, 8)]
 
 
@@ -91,21 +106,15 @@ def make_deck():
     return deck
 
 
-pprint(make_stacks(make_deck()))
+def main():
+    deck = make_deck()
+    stacks = make_stacks(deck)
+    lines = show_stacks(stacks)
+    for line in lines:
+        print(line)
 
 
+test_card = Card(Rank.THREE, Suit.CLUBS)
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+if __name__ == '__main__':
+    main()
