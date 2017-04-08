@@ -12,8 +12,7 @@ for i in sorted(bestStudent.keys(), reverse=True):
     bestStudentStr += bestStudent[i] + ' scored a ' + i + ".\n"
 print(bestStudentStr)
 
-
-outToFile=open('tworzonypliki.txt', mode = 'w', encoding='utf-8')
+outToFile = open('tworzonypliki.txt', mode='w', encoding='utf-8')
 outToFile.write(bestStudentStr)
 
 outToFile.close()

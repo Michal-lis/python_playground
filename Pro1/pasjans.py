@@ -1,0 +1,1 @@
+print ("Robimy z Piotrem pasjansa")
