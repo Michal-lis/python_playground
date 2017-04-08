@@ -17,3 +17,5 @@ outToFile=open('tworzonypliki.txt', mode = 'w', encoding='utf-8')
 outToFile.write(bestStudentStr)
 
 outToFile.close()
+
+# helllo lis
