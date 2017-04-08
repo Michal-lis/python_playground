@@ -22,3 +22,19 @@ class Rank(Enum):
     QUEEN = 12
     KING = 13
     ACE = 15
+
+
+class Color(Enum):
+    CLUBS = 1
+    SPADES = 2
+    DIAMONDS = 3
+    HEARTS = 4
+
+    def is_red(self):
+        return self == Color.DIAMONDS or self == Color.HEARTS
+
+    def is_black(self):
+        return self == Color.SPADES or self == Color.CLUBS
+
+    def is_different_color(self, color):
+        return color.is_red() if self.is_black() else color.is_black()
