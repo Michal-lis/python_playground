@@ -31,10 +31,10 @@ class Color(Enum):
     HEARTS = 4
 
     def is_red(self):
-        return self == Color.DIAMONDS or self == Color.HEARTS
+        return self is Color.DIAMONDS or self is Color.HEARTS
 
     def is_black(self):
-        return self == Color.SPADES or self == Color.CLUBS
+        return self is Color.SPADES or self is Color.CLUBS
 
     def is_different_color(self, color):
         return color.is_red() if self.is_black() else color.is_black()
