@@ -1,19 +1,20 @@
 from enum import Enum
 from random import shuffle
 from pprint import pprint
+from typing import List
 
 
 class Card:
-    def __init__(self, rank, suit):
+    def __init__(self, rank: Rank, suit: Suit) -> None:
         super().__init__()
         self.suit = suit
         self.rank = rank
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         """For debugging purposes"""
         return str(self.rank) + " " + str(self.suit)
 
-    def __str__(self):
+    def __str__(self) -> str:
         """For displaying purposes"""
         return (str(self.rank) + str(self.suit)).rjust(4)
 
@@ -33,7 +34,7 @@ class Rank(Enum):
     KING = 13
     ACE = 15
 
-    def __str__(self):
+    def __str__(self) -> str:
         if self is Rank.JACK:
             return 'J'
         elif self is Rank.QUEEN:
@@ -46,7 +47,7 @@ class Rank(Enum):
             # for all other ranks, the display string is equal to the enum value
             return str(self.value)
 
-    def is_followed_by(self, other_rank):
+    def is_followed_by(self, other_rank: 'Rank') -> bool:
         """True iff other_rank is one higher than self"""
         return self.value + 1 == other_rank.value
 
@@ -57,7 +58,7 @@ class Suit(Enum):
     DIAMONDS = 3
     HEARTS = 4
 
-    def __str__(self):
+    def __str__(self) -> str:
         if self is Suit.CLUBS:
             return '♣'
         elif self is Suit.SPADES:
@@ -67,17 +68,17 @@ class Suit(Enum):
         elif self is Suit.HEARTS:
             return '♥'
 
-    def is_red(self):
+    def is_red(self) -> bool:
         return self is Suit.DIAMONDS or self is Suit.HEARTS
 
-    def is_black(self):
+    def is_black(self) -> bool:
         return self is Suit.SPADES or self is Suit.CLUBS
 
-    def is_different_color(self, suit):
+    def is_different_color(self, suit: 'Suit') -> bool:
         return suit.is_red() if self.is_black() else suit.is_black()
 
 
-def show_stacks(stacks):
+def show_stacks(stacks: List[List[Card]]) -> List[str]:
     """Returns standard repr of the seven stacks, each laid out vertically."""
     lines = []
     max_stack_len = max(len(s) for s in stacks)  # this is how many rows we need
@@ -92,12 +93,12 @@ def show_stacks(stacks):
     return lines
 
 
-def make_stacks(deck):
+def make_stacks(deck: List[Card]) -> List[List[Card]]:
     """Note: this methods mutates `deck`"""
     return [[deck.pop() for _ in range(i)] for i in range(1, 8)]
 
 
-def make_deck():
+def make_deck() -> List[Card]:
     deck = []
     for c in Suit:
         for r in Rank:
