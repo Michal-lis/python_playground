@@ -4,21 +4,6 @@ from pprint import pprint
 from typing import List
 
 
-class Card:
-    def __init__(self, rank: Rank, suit: Suit) -> None:
-        super().__init__()
-        self.suit = suit
-        self.rank = rank
-
-    def __repr__(self) -> str:
-        """For debugging purposes"""
-        return str(self.rank) + " " + str(self.suit)
-
-    def __str__(self) -> str:
-        """For displaying purposes"""
-        return (str(self.rank) + str(self.suit)).rjust(4)
-
-
 class Rank(Enum):
     TWO = 2
     THREE = 3
@@ -76,6 +61,21 @@ class Suit(Enum):
 
     def is_different_color(self, suit: 'Suit') -> bool:
         return suit.is_red() if self.is_black() else suit.is_black()
+
+
+class Card:
+    def __init__(self, rank: Rank, suit: Suit) -> None:
+        super().__init__()
+        self.suit = suit
+        self.rank = rank
+
+    def __repr__(self) -> str:
+        """For debugging purposes"""
+        return str(self.rank) + " " + str(self.suit)
+
+    def __str__(self) -> str:
+        """For displaying purposes"""
+        return (str(self.rank) + str(self.suit)).rjust(4)
 
 
 def show_stacks(stacks: List[List[Card]]) -> List[str]:
