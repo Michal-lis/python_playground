@@ -37,4 +37,4 @@ class Color(Enum):
         return self == Color.SPADES or self == Color.CLUBS
 
     def is_different_color(self, color):
-        return color.is_red() if self.is_black() else color.is_black()
+        return color.is_red() if self.is_black() else color.is_black()ą
