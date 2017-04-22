@@ -4,10 +4,14 @@ import json
 app = Flask(__name__)
 
 
-@app.route("/person/<int:id>")
+@app.route("/persons/<int:id>")
 def person(id):
     return json.dumps(g.persons[id])
 
+
+@app.route("/persons")
+def persons():
+    return json.dumps(g.persons)
 
 if __name__ == "__main__":
     with app.app_context():
@@ -24,7 +28,6 @@ if __name__ == "__main__":
                 'age': 22
             }
         ]
-
         app.run()
 
 
