@@ -1,4 +1,5 @@
-from flask import Flask
+from flask import Flask, request
+import json
 
 app = Flask(__name__)
 
@@ -23,6 +24,16 @@ def show_user_profile(username):
 def show_post(post_id):
     # show the post with the given id, the id is an integer
     return 'Post %d' % post_id
+
+
+@app.route('/login', methods=['GET', 'POST'])
+def login():
+    if request.method == 'POST':
+        # do_the_login()
+        return json.dumps(request.form)
+    else:
+        return "You made a GET request"
+        # show_the_login_form()
 
 
 if __name__ == "__main__":
