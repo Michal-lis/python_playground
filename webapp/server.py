@@ -9,6 +9,28 @@ def person(id):
     return json.dumps(g.persons[id])
 
 
+@app.route("/foo")
+def foo():
+    return json.dumps({
+        'todos': [
+            {'text': 'Hello Lis'},
+            {'text': 'Hello Piter'}
+        ]
+    })
+
+@app.route("/home")
+def home():
+    return """
+<style>
+.lis {
+    color: red
+}
+</style>
+
+<p>Hello <span class="lis">Lis</span></p>
+    """
+
+
 if __name__ == "__main__":
     with app.app_context():
 
