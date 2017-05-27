@@ -62,28 +62,32 @@ def shutdown_session():
     g.db.close()
 
 
-if __name__ == "__main__":
-    with app.app_context():
-        g.db = records.Database('sqlite:///db.db')
-        app.run()
+@app.after_request
+def apply_caching(response):
+    response.headers["Access-Control-Allow-Origin"] = "*"
+    return response
 
-        # with app.app_context():
-        #     g.persons = {
-        #         0: {
-        #             'id': 0,
-        #             'name': 'Klaudia',
-        #             'age': 22
-        #         },
-        #         1: {
-        #             'id': 1,
-        #             'name': 'Janek',
-        #             'age': 21
-        #         },
-        #         2: {
-        #             'id': 2,
-        #             'name': 'Janek',
-        #             'age': 21
-        #         }
-        #     }
-        #     g.id_counter = 2
-        #     app.run()
+if __name__ == "__main__":
+    # with app.app_context():
+    #     g.db = records.Database('sqlite:///db.db')
+    #     app.run()
+    with app.app_context():
+        g.persons = {
+            0: {
+                'id': 0,
+                'name': 'Klaudia',
+                'age': 22
+            },
+            1: {
+                'id': 1,
+                'name': 'Janek',
+                'age': 21
+            },
+            2: {
+                'id': 2,
+                'name': 'Janek',
+                'age': 21
+            }
+        }
+        g.id_counter = 2
+        app.run()
