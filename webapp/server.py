@@ -1,5 +1,5 @@
 from flask import Flask, request, g, jsonify, abort, render_template
-import json
+import records
 
 app = Flask(__name__)  # __name zawiera main
 
@@ -22,7 +22,7 @@ def person(id):
 @app.route("/persons", methods=['GET', 'POST'])
 def persons():
     if request.method == 'GET':
-        lista=[]
+        lista = []
         for each in sorted(g.persons):
             lista.append(g.persons[each])
         # lista2 = [g.persons[key] for key in sorted(g.persons)]
@@ -41,45 +41,49 @@ def persons():
             return '', 204,
 
 
-@app.route("/foo")
-def foo():
-    return jsonify({
-        'todos': [
-            {'text': 'Hello Lisek'},
-            {'text': 'Hello Piter'}
-        ]
-    })
+@app.route("/query")
+def query():
+    q = """
+    SELECT name, seat, room, screenings.datetime, title
+    FROM users, tickets, screenings, films
+    WHERE users.id = 2 AND tickets.user_id = users.id AND tickets.screening_id = screenings.id
+    AND screenings.film_id = films.id
+    """
+    return jsonify(g.db.query(q).as_dict())
 
 
 @app.route('/<string:home>')
 def static_page(home):
     return render_template('%s.html' % home)
 
+
+@app.teardown_appcontext
+def shutdown_session():
+    g.db.close()
+
+
 if __name__ == "__main__":
     with app.app_context():
-        g.persons = {
-            0: {
-                'id': 0,
-                'name': 'Klaudia',
-                'age': 22
-            },
-            1: {
-                'id': 1,
-                'name': 'Janek',
-                'age': 21
-            },
-            2: {
-                'id': 2,
-                'name': 'Janek',
-                'age': 21
-            }
-        }
-        g.id_counter = 2
+        g.db = records.Database('sqlite:///db.db')
         app.run()
 
-
-# {
-#     'id': 1,
-#     'name': 'Michał',
-#     'age': 21
-# }
+        # with app.app_context():
+        #     g.persons = {
+        #         0: {
+        #             'id': 0,
+        #             'name': 'Klaudia',
+        #             'age': 22
+        #         },
+        #         1: {
+        #             'id': 1,
+        #             'name': 'Janek',
+        #             'age': 21
+        #         },
+        #         2: {
+        #             'id': 2,
+        #             'name': 'Janek',
+        #             'age': 21
+        #         }
+        #     }
+        #     g.id_counter = 2
+        #     app.run()
