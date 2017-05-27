@@ -1,1 +1,2 @@
-from flask import Flask
+import django
+print(django.VERSION)

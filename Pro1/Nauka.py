@@ -1,50 +1,19 @@
-class Square:
-    def __init__(self, height="0", width="0"):
-        self.height = height
-        self.width = width
+import socket
+from pprint import  pprint
 
-    @property #GETTER
-    def height(self):
-        print("Retrieving the Height")
+s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
-        return self.__height
+print(s)
 
-    @height.setter
-    def height(self,value):
+server = 'pythonprogramming.net'
 
-        if value.isdigit():
-            self.__height=value
-        else:
-            print("Please only enter numbers for height")
+def pscan(port):
+    try:
+        s.connect((server,port))
+        return True
+    except:
+        return False
 
-    @property  # GETTER
-    def width(self):
-        print("Retrieving the Height")
-
-        return self.__width
-
-    @height.setter
-    def width(self, value):
-
-        if value.isdigit():
-            self.__width = value
-        else:
-            print("Please only enter numbers for height")
-
-    def getArea(self):
-        return int(self.__width)*int(self.__height)
-
-def main():
-    asquare=Square()
-    height=input("Enter height:")
-    width=input("Enter width:")
-
-    asquare.height=height
-    asquare.width=width
-
-    print("Height :{}".format(asquare.height))
-    print("Width :{}".format(asquare.width))
-
-    print("The Area is :{}".format(asquare.getArea()))
-
-main()
+for x in range(1,26):
+    if pscan(x):
+        print('Port',x,'is open')
