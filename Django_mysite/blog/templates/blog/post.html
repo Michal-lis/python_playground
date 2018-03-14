@@ -1,0 +1,8 @@
+{% extends "personal/header.html" %}
+
+{% block content%}
+ <h3>{{film.title}} </h3>
+<h4> Directed by {{film.director}}</h4>
+<h6> {{film.date.year}}</h6>
+{{film.description|safe}}
+{% endblock%}

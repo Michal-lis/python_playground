@@ -1,0 +1,10 @@
+{% extends "personal/header.html" %}<!--pokazuje jaki plik rozszerza -->
+
+{% block content%}<!--pokazuje gdzie ma byc wstawione-->
+    {% for film in object_list %}
+<!--object_list wzielo sie z urls.py Post.objects-->
+    <h5> <a href="{{film.id}}">{{ film.title}}</a>  {{ film.director}}  {{film.date |date:"Y-m-d"}}  </h5>
+<!-- | w JINJA oznacza filtr -->
+<!--object_list wzielo sie z urls.py Post.objects-->
+    {% endfor %}
+{% endblock%}
