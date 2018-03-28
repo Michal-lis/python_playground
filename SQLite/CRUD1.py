@@ -9,7 +9,7 @@ from pprint import pprint
 # time.time() provides time in seconds since the epoch(begging of the era) as fpn
 # time.gmtime(0) to check what epoch is the sstem using
 # time.sleep(x) - waits for SECONDS
-# "%.3f"
+# "%.3f".
 
 
 def create_table(c):
