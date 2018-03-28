@@ -42,18 +42,32 @@ def read_from_db(c):
     lis = c.fetchall()
     pprint(lis)
 
-def graph_data():
+
+def graph_data(c):
+    c.execute("SELECT unix, value FROM datatoPlot")
+    data = c.fetchall()
+    values = []
+    dates = []
+    for row in data:
+        print(row[0])
+        date = datetime.datetime.fromtimestamp(row[0])
+        print(date)
+        dates.append(date)
+        values.append(row[0])
+    plt.plot_date(dates, values, '-')
+    plt.show()
 
 
 style.use('fivethirtyeight')
 conn = sqlite3.connect('example2.db', timeout=10)
 c = conn.cursor()
-create_table(c)
+# create_table(c)
 # simple_data_entry(c)
-for i in range(10):
-    dynamic_data_entry(c)
-    time.sleep(1)
-read_from_db(c)
+# for i in range(10):
+#     dynamic_data_entry(c)
+#     time.sleep(1)
+# read_from_db(c)
+graph_data(c)
 conn.commit()
 c.close()
 conn.close()
