@@ -2,7 +2,10 @@ import sqlite3
 import time
 import datetime
 import random
+import matplotlib.pyplot as plt
+import matplotlib.dates as mdates
 
+from matplotlib import style
 from pprint import pprint
 
 
@@ -39,7 +42,10 @@ def read_from_db(c):
     lis = c.fetchall()
     pprint(lis)
 
+def graph_data():
 
+
+style.use('fivethirtyeight')
 conn = sqlite3.connect('example2.db', timeout=10)
 c = conn.cursor()
 create_table(c)
