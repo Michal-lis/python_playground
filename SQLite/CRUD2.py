@@ -2,12 +2,18 @@ import sqlite3
 import time
 import datetime
 import random
+import matplotlib.pyplot as plt
+import matplotlib.dates as mdates
 
 from matplotlib import style
 from pprint import pprint
 
 
-# Do automatic backups!
+# time.time() provides time in seconds since the epoch(begging of the era) as fpn
+# time.gmtime(0) to check what epoch is the sstem using
+# time.sleep(x) - waits for SECONDS
+# "%.3f".
+
 
 def create_table(c):
     c.execute('CREATE TABLE IF NOT EXISTS dataToPlot(unix REAL, datastamp TEXT, keyword TEXT, value REAL)')
@@ -37,15 +43,31 @@ def read_from_db(c):
     pprint(lis)
 
 
-def del_and_update(c):
-    c.execute("SELECT * FROM dataToPlot")
-    [print(row) for row in c.fetchall()]
+def graph_data(c):
+    c.execute("SELECT unix, value FROM datatoPlot")
+    data = c.fetchall()
+    values = []
+    dates = []
+    for row in data:
+        print(row[0])
+        date = datetime.datetime.fromtimestamp(row[0])
+        print(date)
+        dates.append(date)
+        values.append(row[0])
+    plt.plot_date(dates, values, '-')
+    plt.show()
 
 
+style.use('fivethirtyeight')
 conn = sqlite3.connect('example2.db', timeout=10)
 c = conn.cursor()
-create_table(c)
-del_and_update(c)
+# create_table(c)
+# simple_data_entry(c)
+# for i in range(10):
+#     dynamic_data_entry(c)
+#     time.sleep(1)
+# read_from_db(c)
+graph_data(c)
 conn.commit()
 c.close()
 conn.close()
