@@ -37,7 +37,13 @@ def read_from_db(c):
     pprint(lis)
 
 
-def del_and_update(c):
+def del_and_update(conn, c):
+    c.execute("SELECT * FROM dataToPlot")
+    [print(row) for row in c.fetchall()]
+
+    c.execute("UPDATE dataToPlot SET value=99 WHERE value=(%s)" % 3)
+    conn.commit()
+
     c.execute("SELECT * FROM dataToPlot")
     [print(row) for row in c.fetchall()]
 
@@ -45,7 +51,7 @@ def del_and_update(c):
 conn = sqlite3.connect('example2.db', timeout=10)
 c = conn.cursor()
 create_table(c)
-del_and_update(c)
+del_and_update(conn, c)
 conn.commit()
 c.close()
 conn.close()
