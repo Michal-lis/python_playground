@@ -15,7 +15,6 @@ class Window(Frame):
 
         menu = Menu(self.master)
         self.master.config(menu=menu)
-
         file = Menu(menu)
         menu.add_cascade(label='File', menu=file)
         file.add_command(label='Exit', command=self.client_exit)
@@ -35,7 +34,6 @@ class Window(Frame):
     def show_image(self):
         load = Image.open('tad_sznuk.jpg')
         render = ImageTk.PhotoImage(load)
-
         img = Label(self, image=render)
         img.image = render
         img.place(x=0, y=0)

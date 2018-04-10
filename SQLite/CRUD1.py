@@ -17,8 +17,13 @@ def simple_data_entry(c):
     c.execute("INSERT INTO dataToPlot VALUES (1234556,'2018-01-01','Python',5)")
 
 
-def data_entry(data):
-    c.execute('INSERT INTO dataToPlot VALUES (%s)' % data)
+def data_entry(c, data):
+    columns = ', '.join(data.keys())
+    placeholders = ', '.join('?' * len(data))
+    sql = 'INSERT INTO dataToPlot ({}) VALUES ({})'.format(columns, placeholders)
+    for d in data.values():
+        print(type(d))
+    c.execute(sql, data.values())
 
 
 def dynamic_data_entry(c):
@@ -51,7 +56,11 @@ def del_and_update(conn, c):
 conn = sqlite3.connect('example2.db', timeout=10)
 c = conn.cursor()
 create_table(c)
-del_and_update(conn, c)
+unix = int(time.time())
+dictdata = {'unix': int(time.time()),
+            'datastamp': str(datetime.datetime.fromtimestamp(unix).strftime(('%Y-%m-%d %H:%M:%S'))),
+            'keyword': 'Python', 'value': 2}
+data_entry(c, dictdata)
 conn.commit()
 c.close()
 conn.close()

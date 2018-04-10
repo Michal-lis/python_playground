@@ -31,11 +31,3 @@ print("Łaczna wartość udziałów: ", my_data_frame['Liczba udziałów'].sum()
 ps = my_data_frame.groupby("Nazwisko").agg({'Wartość udziałów': lambda x: x / share_value})
 ps.columns = ['Jaką część udziałów całości posiada']
 print(ps)
-
-
-Nazwa
-Adres - w takiej formie jak csv
-daty
-data zawieszenia
-last registry update 
-email
