@@ -26,7 +26,7 @@ def concat_append():
     s = pd.Series([800, 2, 50], index=['HPI', 'Int_rate', 'US_GDP_Thousands'])
     # ignore index automatically adds the next index
     df4 = df4.append(s, ignore_index=True)
-    print(df4)
+    return concat
 
 
 def merge():
@@ -44,8 +44,14 @@ def join():
     print(joined)
 
 
+# dealing with missing data
+
+
 if __name__ == '__main__':
     print(df1)
     print(df2)
     print(df3)
-    join()
+    df = concat_append()
+    print(df)
+    df = df.dropna()
+    print(df)
