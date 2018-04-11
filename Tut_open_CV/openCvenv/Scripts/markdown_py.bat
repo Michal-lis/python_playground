@@ -1,1 +1,0 @@
-@"c:\users\michu\desktop\pracain¿\tutcv\opencvenv\scripts\python.exe" "c:\users\michu\desktop\pracain¿\tutcv\opencvenv\Scripts\markdown_py" %*
