@@ -19,7 +19,7 @@ from __future__ import absolute_import
 from __future__ import division
 from __future__ import print_function
 
-import argparse
+import argpars
 import os
 import sys
 import tarfile
@@ -29,7 +29,7 @@ import tensorflow as tf
 
 DATA_URL = 'https://www.cs.toronto.edu/~kriz/cifar-10-binary.tar.gz'
 
-parser = argparse.ArgumentParser()
+parser = argpars.ArgumentParser()
 
 parser.add_argument(
     '--data_dir', type=str, default='/tmp/cifar10_data',

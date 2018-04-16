@@ -35,7 +35,7 @@ from __future__ import absolute_import
 from __future__ import division
 from __future__ import print_function
 
-import argparse
+import argpars
 import os.path
 import re
 import sys
@@ -194,7 +194,7 @@ def main(_):
 
 
 if __name__ == '__main__':
-  parser = argparse.ArgumentParser()
+  parser = argpars.ArgumentParser()
   # classify_image_graph_def.pb:
   #   Binary representation of the GraphDef protocol buffer.
   # imagenet_synset_to_human_label_map.txt:

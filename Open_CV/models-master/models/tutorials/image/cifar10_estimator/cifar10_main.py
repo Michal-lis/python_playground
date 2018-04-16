@@ -28,7 +28,7 @@ http://www.cs.toronto.edu/~kriz/cifar.html
 from __future__ import division
 from __future__ import print_function
 
-import argparse
+import argpars
 import functools
 import itertools
 import os
@@ -388,7 +388,7 @@ def main(job_dir, data_dir, num_gpus, variable_strategy,
 
 
 if __name__ == '__main__':
-  parser = argparse.ArgumentParser()
+  parser = argpars.ArgumentParser()
   parser.add_argument(
       '--data-dir',
       type=str,

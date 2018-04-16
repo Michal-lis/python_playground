@@ -33,7 +33,7 @@ from __future__ import absolute_import
 from __future__ import division
 from __future__ import print_function
 
-import argparse
+import argpars
 from datetime import datetime
 import math
 import sys
@@ -242,7 +242,7 @@ def main(_):
 
 
 if __name__ == '__main__':
-  parser = argparse.ArgumentParser()
+  parser = argpars.ArgumentParser()
   parser.add_argument(
       '--batch_size',
       type=int,

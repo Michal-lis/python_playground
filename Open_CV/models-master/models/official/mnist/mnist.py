@@ -17,13 +17,13 @@ from __future__ import absolute_import
 from __future__ import division
 from __future__ import print_function
 
-import argparse
+import argpars
 import os
 import sys
 
 import tensorflow as tf
 
-parser = argparse.ArgumentParser()
+parser = argpars.ArgumentParser()
 
 # Basic model parameters.
 parser.add_argument('--batch_size', type=int, default=100,

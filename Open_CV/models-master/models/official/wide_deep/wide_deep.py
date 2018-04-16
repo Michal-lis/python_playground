@@ -17,7 +17,7 @@ from __future__ import absolute_import
 from __future__ import division
 from __future__ import print_function
 
-import argparse
+import argpars
 import shutil
 import sys
 
@@ -33,7 +33,7 @@ _CSV_COLUMNS = [
 _CSV_COLUMN_DEFAULTS = [[0], [''], [0], [''], [0], [''], [''], [''], [''], [''],
                         [0], [0], [0], [''], ['']]
 
-parser = argparse.ArgumentParser()
+parser = argpars.ArgumentParser()
 
 parser.add_argument(
     '--model_dir', type=str, default='/tmp/census_model',

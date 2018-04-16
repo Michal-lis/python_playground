@@ -35,7 +35,7 @@ from __future__ import absolute_import
 from __future__ import division
 from __future__ import print_function
 
-import argparse
+import argpars
 import os
 import re
 import sys
@@ -46,7 +46,7 @@ import tensorflow as tf
 
 import cifar10_input
 
-parser = argparse.ArgumentParser()
+parser = argpars.ArgumentParser()
 
 # Basic model parameters.
 parser.add_argument('--batch_size', type=int, default=128,

@@ -18,7 +18,7 @@ from __future__ import absolute_import
 from __future__ import division
 from __future__ import print_function
 
-import argparse
+import argpars
 import os
 import sys
 
@@ -31,7 +31,7 @@ TRAINING_URL = '%s/%s' % (DATA_URL, TRAINING_FILE)
 EVAL_FILE = 'adult.test'
 EVAL_URL = '%s/%s' % (DATA_URL, EVAL_FILE)
 
-parser = argparse.ArgumentParser()
+parser = argpars.ArgumentParser()
 
 parser.add_argument(
     '--data_dir', type=str, default='/tmp/census_data',

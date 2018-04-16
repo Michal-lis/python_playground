@@ -18,7 +18,7 @@ from __future__ import absolute_import
 from __future__ import division
 from __future__ import print_function
 
-import argparse
+import argpars
 import os
 import sys
 
@@ -26,7 +26,7 @@ import tensorflow as tf
 
 import resnet_model
 
-parser = argparse.ArgumentParser()
+parser = argpars.ArgumentParser()
 
 # Basic model parameters.
 parser.add_argument('--data_dir', type=str, default='/tmp/cifar10_data',

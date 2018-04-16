@@ -23,7 +23,7 @@ from __future__ import absolute_import
 from __future__ import division
 from __future__ import print_function
 
-import argparse
+import argpars
 import os
 import sys
 
@@ -31,7 +31,7 @@ import tensorflow as tf
 
 from tensorflow.contrib.learn.python.learn.datasets import mnist
 
-parser = argparse.ArgumentParser()
+parser = argpars.ArgumentParser()
 
 parser.add_argument('--directory', type=str, default='/tmp/mnist_data',
                     help='Directory to download data files and write the '
