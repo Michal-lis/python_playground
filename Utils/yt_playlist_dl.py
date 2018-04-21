@@ -11,11 +11,16 @@ should be added to download resolution of choice
 import os
 import logging
 import sys
+import urllib
 
 from pytube import Playlist
 from pytube.__main__ import YouTube
 
 logger = logging.getLogger(__name__)
+
+directory_MIT = 'C:/Users/Michu/Videos/Python_Videos/MIT/'
+playlists_MIT = {
+    'Introduction to Algorithms': 'https://www.youtube.com/playlist?list=PLrwuNGSwGLHc4uasQP9_9ZgLQo71PRw2O'}
 
 playlists_pydata = {
     'PyData Seattle 2017': 'https://www.youtube.com/playlist?list=PLGVZCDnMOq0rxoq9Nx0B4tqtr891vaCn7',
@@ -99,16 +104,16 @@ def dl_user_playlist():
     print("Downloading complete")
 
 
-def dl_dict_videos(playlists):
+def dl_dict_videos(directory, playlists):
     i = 1
     for name in playlists:
-        destination = 'C:/Users/Michu/Videos/Python_Videos/PyData/' + name
+        destination = directory + name
         playlist = playlists[name]
         print("\nNow downloading {}, {}/{} of all playlists".format(name, i, len(playlists)))
         pl = MyPlaylist(playlist)
         try:
             os.stat(destination)
-        except:
+        except FileNotFoundError:
             os.mkdir(destination)
         pl.download_all(destination)
         i = i + 1
@@ -116,4 +121,8 @@ def dl_dict_videos(playlists):
 
 
 if __name__ == '__main__':
-    dl_dict_videos(playlists_pydata)
+    try:
+        dl_dict_videos(directory_MIT, playlists_pydata)
+    except urllib.error.URLError:
+        sys.stdout.write("You have no Internet Connection.")
+        exit()
