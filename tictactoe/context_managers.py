@@ -26,10 +26,6 @@ def gene():
     yield p
 
 
-# with open_files('data.txt', 'a') as f:
-# f.write("matka boska czestochowska")
-
-a = next(gene())
-print(a)
-a = next(gene())
-print(a)
+a = range(6)
+b = enumerate(a)
+print(next(b))
