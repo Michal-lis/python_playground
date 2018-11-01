@@ -1,5 +1,5 @@
 import itertools
-from Piece import Pawn, Bishop, Knight, Rook, King, Queen
+from Piece import Piece, Pawn, Bishop, Knight, Rook, King, Queen
 from utils import WHITE, BLACK, letters, numbers, convert_l_n_to_indexes
 
 
@@ -22,22 +22,13 @@ class Game:
                 print(f"{current_player.name}'s move. Choose a piece to move")
                 field_chosen = current_player.choose_a_piece_to_move()
                 valid_piece_chosen = self.board.validate_piece_choice(field_chosen, current_player)
-                print(valid_piece_chosen)
-            # move_to, number_to = current_player.choose_a_destination()
-            # move_is_valid = self.validate_move(move_from, move_to)
+            piece_chosen = self.board.get_square_content(field_chosen[0], field_chosen[1])
+            print("You chose to move: " + str(piece_chosen) + " from " + str(field_chosen))
+            self.get_possible_moves(piece_chosen, field_chosen)
 
-            # possible_moves = self.get_possible_moves()
-            # field_chosen = current_player.choose_field(possible_moves)
-            # self.set_square_sign(field_chosen, current_player.sign)
-            # finished = self.check_winner() or self.check_turn_number()
-            # print(self.board)
-            # self.change_current_player()
-
-    def move_piece(self, move_from):
-        self.board.move_piece(move_from)
-
-    def validate_move(self, move_from, move_to):
-        return self.board.validate_move(move_from, move_to)
+    def get_possible_moves(self, piece_chosen, field_chosen):
+        assert isinstance(piece_chosen, Piece)
+        piece_chosen.get_possible_moves(field_chosen, self.board)
 
     def initialize_starting_board(self):
         self.board.initialize_starting_board()
@@ -49,7 +40,8 @@ class Game:
         # name = input("What's the name of 2nd player?\n")
         name = "betty"
         player2 = Player(name, BLACK)
-        print(f"{player1.name} is {player1.color} and {player2.name} is {player2.color}. Let's begin!\n")
+        print(
+            f"{player1.get_name()} is {player1.get_color()} and {player2.get_name()} is {player2.get_color()}. Let's begin!\n")
         return player1, player2
 
     def change_current_player(self):
@@ -104,25 +96,29 @@ class Board:
 
     def initialize_starting_board(self):
         for letter in letters:
-            self.set_square_content(letter, 7, Pawn(WHITE))
-            self.set_square_content(letter, 2, Pawn(BLACK))
+            self.set_square_content(letter, 7, Pawn(BLACK))
+            self.set_square_content(letter, 2, Pawn(WHITE))
         for letter in ['a', 'h']:
-            self.set_square_content(letter, 1, Bishop(BLACK))
-            self.set_square_content(letter, 8, Bishop(WHITE))
+            self.set_square_content(letter, 1, Bishop(WHITE))
+            self.set_square_content(letter, 8, Bishop(BLACK))
         for letter in ['b', 'g']:
-            self.set_square_content(letter, 1, Knight(BLACK))
-            self.set_square_content(letter, 8, Knight(WHITE))
+            self.set_square_content(letter, 1, Knight(WHITE))
+            self.set_square_content(letter, 8, Knight(BLACK))
         for letter in ['c', 'f']:
-            self.set_square_content(letter, 1, Rook(BLACK))
-            self.set_square_content(letter, 8, Rook(WHITE))
-        self.set_square_content('d', 1, Queen(BLACK))
-        self.set_square_content('e', 8, Queen(WHITE))
-        self.set_square_content('e', 1, King(BLACK))
-        self.set_square_content('d', 8, King(WHITE))
+            self.set_square_content(letter, 1, Rook(WHITE))
+            self.set_square_content(letter, 8, Rook(BLACK))
+        self.set_square_content('d', 1, Queen(WHITE))
+        self.set_square_content('e', 8, Queen(BLACK))
+        self.set_square_content('e', 1, King(WHITE))
+        self.set_square_content('d', 8, King(BLACK))
 
     def get_square_representation(self, l, n):
         x_axis, y_axis = convert_l_n_to_indexes(l, n)
         return self.board[x_axis][y_axis]
+
+    def check_if_occupied(self, l, n):
+        x_axis, y_axis = convert_l_n_to_indexes(l, n)
+        return self.board[x_axis][y_axis].get_occupied()
 
     def get_square_content(self, l, n):
         x_axis, y_axis = convert_l_n_to_indexes(l, n)
@@ -138,9 +134,12 @@ class Board:
         number_from = field_chosen[1]
         piece_chosen = self.get_square_content(letter_from, number_from)
         if not piece_chosen:
+            print("There is no piece on this field!")
             return False
         if piece_chosen.get_color() != current_player.get_color():
+            print("The chosen piece belongs to your opponent!")
             return False
+        return True
 
     def move_piece(self, move_from, move_to):
         letter_from = move_from[0]
@@ -170,6 +169,9 @@ class Square:
             return self.piece.get_sign()
         else:
             return self.letter + self.number
+
+    def get_occupied(self):
+        return self.occupied
 
     def get_piece(self):
         if self.occupied == False:
