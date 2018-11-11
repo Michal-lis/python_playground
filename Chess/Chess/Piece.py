@@ -46,7 +46,7 @@ class Piece:
                     elif piece and piece.get_color() != self.color:
                         possible_moves.append((l, n))
                         break
-                    # your piece encountered
+                    # ally piece encountered
                     else:
                         break
                     # for king only:
