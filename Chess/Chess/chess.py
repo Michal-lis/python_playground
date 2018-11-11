@@ -1,6 +1,13 @@
 import itertools
 from Piece import Piece, Pawn, Bishop, Knight, Rook, King, Queen
-from utils import WHITE, BLACK, letters, numbers, convert_l_n_to_indexes
+from utils import WHITE, BLACK, letters, numbers, convert_l_n_to_indexes, choose_field
+
+"""
+QUESTIONS:
+1.self.so_sth ma samo to robic operujac na self.board czy prowadzic do self.board.do_sth? czy moze self.get_board().metoda? 
+np. self.get_board().execute_move(piece_chosen, destination) - czy to nie wyglada dziwnie?
+2. jak uniknac local variable might be referenced before assignment?
+"""
 
 
 class Game:
@@ -8,27 +15,46 @@ class Game:
     def __init__(self) -> None:
         self.players = self.initialize_players()
         self.board = Board()
-        self.current_player_id = 0
+        self.current_player = self.players[1]
         self.turn_number = 1
+
+    def get_board(self):
+        return self.board
 
     def run(self):
         self.initialize_starting_board()
-        self.show_board()
         finished = False
         while not finished:
+            field_chosen, destination = None, None
+            self.show_board()
             current_player = self.get_current_player()
+
             valid_piece_chosen = False
             while not valid_piece_chosen:
-                print(f"{current_player.name}'s move. Choose a piece to move")
+                print(f"{current_player.get_name()}'s move. Choose a piece to move")
                 field_chosen = current_player.choose_a_piece_to_move()
-                valid_piece_chosen = self.board.validate_piece_choice(field_chosen, current_player)
-            piece_chosen = self.board.get_square_content(field_chosen[0], field_chosen[1])
-            print("You chose to move: " + str(piece_chosen) + " from " + str(field_chosen))
-            self.get_possible_moves(piece_chosen, field_chosen)
+                valid_piece_chosen = self.get_board().validate_piece_choice(field_chosen, current_player)
+                if valid_piece_chosen:
+                    piece_chosen = self.get_board().get_square_content(field_chosen[0], field_chosen[1])
+                    print("You chose to move: " + str(piece_chosen) + " from " + str(field_chosen))
+                    possible_moves = self.get_possible_moves(piece_chosen, field_chosen)
+                    if not possible_moves:
+                        print("You cannot move this piece!")
+                        valid_piece_chosen = False
+                    else:
+                        print("Possible moves: " + str(possible_moves))
+
+            valid_destination_chosen = False
+            while not valid_destination_chosen:
+                destination = current_player.choose_a_destination()
+                if destination in possible_moves:
+                    valid_destination_chosen = True
+            self.get_board().execute_move(field_chosen, destination, piece_chosen)
 
     def get_possible_moves(self, piece_chosen, field_chosen):
         assert isinstance(piece_chosen, Piece)
-        piece_chosen.get_possible_moves(field_chosen, self.board)
+        board = self.get_board()
+        return piece_chosen.get_possible_moves(field_chosen, board)
 
     def initialize_starting_board(self):
         self.board.initialize_starting_board()
@@ -44,17 +70,10 @@ class Game:
             f"{player1.get_name()} is {player1.get_color()} and {player2.get_name()} is {player2.get_color()}. Let's begin!\n")
         return player1, player2
 
-    def change_current_player(self):
-        if self.current_player_id == 1:
-            self.current_player_id = 0
-        else:
-            self.current_player_id = 1
-
     def get_current_player(self):
-        if self.current_player_id == 1:
-            return self.players[1]
-        else:
-            return self.players[0]
+        id = 1 if self.current_player.get_id() == 0 else 0
+        self.current_player = self.players[id]
+        return self.current_player
 
     def show_board(self):
         print(self.board)
@@ -79,7 +98,7 @@ class Board:
         for number in reversed(numbers):
             line = str(number) + "  " + chr(9122)
             for letter in letters:
-                line += "  " + str(self.get_square_representation(letter, number))
+                line += "  " + str(self.get_square(letter, number))
             line += "\n"
             repr += line
         repr += "    " + chr(9148) * 33 + "\n       " + chr(9398) + "  " + chr(9399) + "  " + chr(
@@ -112,13 +131,17 @@ class Board:
         self.set_square_content('e', 1, King(WHITE))
         self.set_square_content('d', 8, King(BLACK))
 
-    def get_square_representation(self, l, n):
+    def get_square(self, l, n):
         x_axis, y_axis = convert_l_n_to_indexes(l, n)
         return self.board[x_axis][y_axis]
 
     def check_if_occupied(self, l, n):
         x_axis, y_axis = convert_l_n_to_indexes(l, n)
         return self.board[x_axis][y_axis].get_occupied()
+
+    def execute_move(self, field_chosen, destination, piece_chosen):
+        self.set_square_content(destination[0], destination[1], piece_chosen)
+        self.get_square(field_chosen[0], field_chosen[1]).set_square_free()
 
     def get_square_content(self, l, n):
         x_axis, y_axis = convert_l_n_to_indexes(l, n)
@@ -153,8 +176,6 @@ class Board:
             source_content.validate_move()
         pass
 
-    # TODO VALIDATION : do it passible the whole board to pieces
-
 
 class Square:
 
@@ -168,7 +189,8 @@ class Square:
         if self.occupied:
             return self.piece.get_sign()
         else:
-            return self.letter + self.number
+            # return self.letter + self.number
+            return "  "
 
     def get_occupied(self):
         return self.occupied
@@ -199,6 +221,9 @@ class Player:
     def __repr__(self) -> str:
         return str(self.id) + " " + self.name + " " + self.color
 
+    def get_id(self):
+        return self.id
+
     def get_name(self):
         return self.name
 
@@ -206,16 +231,10 @@ class Player:
         return self.color
 
     def choose_a_piece_to_move(self):
-        chosen_field = input("Choose a piece to move:\n")
-        # TODO validate input
-        letter, number = chosen_field[0], chosen_field[1].lower()
-        return letter, number
+        return choose_field("Choose a piece to move:\n")
 
     def choose_a_destination(self):
-        chosen_field = input("Where do you want to move?\n")
-        # TODO validate input
-        letter, number = chosen_field[0], chosen_field[1].lower()
-        return letter, number
+        return choose_field("Where do you want to move?\n")
 
 
 def main():
