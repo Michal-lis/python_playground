@@ -29,7 +29,7 @@ class Game:
                 field_chosen = current_player.choose_a_piece_to_move()
                 valid_piece_chosen = self.get_board().validate_piece_choice(field_chosen, current_player)
                 if valid_piece_chosen:
-                    piece_chosen = self.get_board().get_square_content(field_chosen[0], field_chosen[1])
+                    piece_chosen = self.get_board().get_piece_from_square(field_chosen[0], field_chosen[1])
                     print("You chose to move: " + str(piece_chosen) + " from " + str(field_chosen))
                     possible_moves = self.get_possible_moves(piece_chosen, field_chosen)
                     if not possible_moves:
@@ -52,22 +52,20 @@ class Game:
             if player.get_color() == color_loosing:
                 looser = player
         print(f"{looser.get_name()}'s king was killed, {looser} lost the game!")
-#TODO: ZDEBUGUJ CZEK PROMOTION
-    # DOPISZ EN PASSANT
 
     def check_promotion(self):
         for line in self.get_board().board:
             for square in (line[0], line[-1]):
                 piece = square.get_piece()
-                if square.get_number() == 8 and isinstance(piece, Pawn) and piece.get_color() == WHITE:
+                if square.get_number() == '8' and isinstance(piece, Pawn) and piece.get_color() == WHITE:
                     square.set_square_free()
-                    self.get_board().set_square_content(square.get_letter(), square.get_number, Queen(WHITE))
-                elif square.number == 1 and isinstance(piece, Pawn) and piece.get_color() == BLACK:
+                    self.get_board().set_piece_on_square(square.get_letter(), square.get_number(), Queen(WHITE))
+                elif square.number == '1' and isinstance(piece, Pawn) and piece.get_color() == BLACK:
                     square.set_square_free()
-                    self.get_board().set_square_content(square.get_letter(), square.get_number, Queen(BLACK))
+                    self.get_board().set_piece_on_square(square.get_letter(), square.get_number(), Queen(BLACK))
 
     def check_both_mates(self, destination):
-        future_piece_chosen = self.get_board().get_square_content(destination[0], destination[1])
+        future_piece_chosen = self.get_board().get_piece_from_square(destination[0], destination[1])
         color_attacking = future_piece_chosen.get_color()
         color_defending = BLACK if color_attacking == WHITE else WHITE
         for line in self.get_board().board:
@@ -122,16 +120,6 @@ class Game:
     def show_board(self):
         print(self.board)
 
-    def ask_if_again(self):
-        correct_input = False
-        while not correct_input:
-            answer = input("\nDo you want to play again?\nPlease answer 'yes' or 'no'.")
-            if answer == "yes":
-                return False
-            elif answer == "no":
-                return True
-
-
 class Player:
     newid = itertools.count()
 
@@ -139,6 +127,7 @@ class Player:
         self.id = next(Player.newid)
         self.name = name
         self.color = color
+
 
     def __repr__(self) -> str:
         return str(self.id) + " " + self.name + " " + self.color

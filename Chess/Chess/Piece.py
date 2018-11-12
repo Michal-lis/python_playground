@@ -38,7 +38,7 @@ class Piece:
                 x, y = modification(x, y)
                 if is_within_board(x, y):
                     l, n = convert_indexes_to_l_n(x, y)
-                    piece = board.get_square_content(l, n)
+                    piece = board.get_piece_from_square(l, n)
                     # free square without piece
                     if not piece:
                         possible_moves.append((l, n))
@@ -123,7 +123,7 @@ class Pawn(Piece):
         y = y_initial + 1 * sign
         if is_within_board(x, y):
             l, n = convert_indexes_to_l_n(x, y)
-            piece = board.get_square_content(l, n)
+            piece = board.get_piece_from_square(l, n)
             if piece and piece.get_color() != self.color:
                 possible_moves.append((l, n))
 
@@ -133,7 +133,7 @@ class Pawn(Piece):
 
         if is_within_board(x, y):
             l, n = convert_indexes_to_l_n(x, y)
-            piece = board.get_square_content(l, n)
+            piece = board.get_piece_from_square(l, n)
             if piece and piece.get_color() != self.color:
                 possible_moves.append((l, n))
 
@@ -163,14 +163,14 @@ class Knight(Piece):
         """
         x = x_initial
         y = y_initial
-        possibilities = [(x - 1, y + 2), (x + 1, y + 2),
+        possibilities = ((x - 1, y + 2), (x + 1, y + 2),
                          (x - 2, y + 1), (x + 2, y + 1),
                          (x - 2, y - 1), (x + 2, y - 1),
-                         (x - 1, y - 2), (x + 1, y - 2)]
+                         (x - 1, y - 2), (x + 1, y - 2))
         for (x, y) in possibilities:
             if is_within_board(x, y):
                 l, n = convert_indexes_to_l_n(x, y)
-                piece = board.get_square_content(l, n)
+                piece = board.get_piece_from_square(l, n)
                 if (not piece) or (piece and piece.get_color() != self.color):
                     possible_moves.append((l, n))
         return possible_moves
@@ -194,7 +194,7 @@ class Bishop(Piece):
                   #
                   #
         """
-        modifications = [self.go_left, self.go_right, self.go_down, self.go_up]
+        modifications = (self.go_left, self.go_right, self.go_down, self.go_up)
         return super().get_possible_moves(current_field, board, modifications)
 
 
@@ -234,8 +234,8 @@ class Queen(Piece):
             # # #
            #  #  #
         """
-        modifications = [self.go_left_up, self.go_right_up, self.go_left_down, self.go_right_down,
-                         self.go_left, self.go_right, self.go_down, self.go_up]
+        modifications = (self.go_left_up, self.go_right_up, self.go_left_down, self.go_right_down,
+                         self.go_left, self.go_right, self.go_down, self.go_up)
         return super().get_possible_moves(current_field, board, modifications)
 
 
@@ -245,6 +245,7 @@ class King(Piece):
         name = "King"
         sign = self.calculate_sign(9812, color)
         super().__init__(name, sign, color)
+        self.en_passant_possible = True
 
     def get_possible_moves(self, current_field, board, modifications=None, limit=None):
         """
@@ -253,7 +254,25 @@ class King(Piece):
             # O #
             # # #
         """
-        modifications = [self.go_left_up, self.go_right_up, self.go_left_down, self.go_right_down,
-                         self.go_left, self.go_right, self.go_down, self.go_up]
+        modifications = (self.go_left_up, self.go_right_up, self.go_left_down, self.go_right_down,
+                         self.go_left, self.go_right, self.go_down, self.go_up)
         limit = 1
-        return super().get_possible_moves(current_field, board, modifications, limit)
+        possible_moves = super().get_possible_moves(current_field, board, modifications, limit)
+        if self.get_color() == WHITE:
+            en_passant_left_possible = self.check_en_passant_possible(board, 'e', 1, WHITE, ['b', 'c', 'd'])
+            en_passant_right_possible = self.check_en_passant_possible(board, 'e', 1, WHITE, ['g', 'f'])
+        elif self.get_color() == BLACK:
+            en_passant_left_possible = self.check_en_passant_possible(board, 'd', 8, BLACK, ['b', 'c'])
+            en_passant_right_possible = self.check_en_passant_possible(board, 'd', 8, BLACK, ['g', 'f', 'e'])
+        return possible_moves
+
+    def check_en_passant_possible(self, board, l, n, color, to_be_empty):
+        fields_empty = True
+        for letter in to_be_empty:
+            if board.get_piece_from_square(letter, n):
+                fields_empty = False
+        if self.get_color() == color and \
+                isinstance(board.get_piece_from_square(l, n), Bishop) and \
+                board.get_piece_from_square(l, n).get_color() == color and \
+                fields_empty:
+            return True

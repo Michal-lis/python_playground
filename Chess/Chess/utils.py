@@ -38,5 +38,15 @@ def convert_indexes_to_l_n(idx, idy):
     return letter, number
 
 
+def ask_if_again():
+    correct_input = False
+    while not correct_input:
+        answer = input("\nDo you want to play again?\nPlease answer 'yes' or 'no'.")
+        if answer == "yes":
+            return False
+        elif answer == "no":
+            return True
+
+
 def is_within_board(x, y):
     return True if (0 <= x <= 7) and (0 <= y <= 7) else False

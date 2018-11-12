@@ -1,0 +1,5 @@
+Help:
+This is a simple multiplayer Python game written in Chess.
+You move your pieces by writing into command line the location of fields e.g. 'e4'.
+The rules of chess can be found online at
+https://en.wikipedia.org/wiki/Rules_of_chess.

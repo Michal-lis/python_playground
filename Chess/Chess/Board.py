@@ -29,29 +29,25 @@ class Board:
 
     def initialize_starting_board(self):
         for letter in letters:
-            self.set_square_content(letter, 7, Pawn(BLACK))
-            self.set_square_content(letter, 2, Pawn(WHITE))
+            self.set_piece_on_square(letter, 7, Pawn(BLACK))
+            self.set_piece_on_square(letter, 2, Pawn(WHITE))
         for letter in ['a', 'h']:
-            self.set_square_content(letter, 1, Bishop(WHITE))
-            self.set_square_content(letter, 8, Bishop(BLACK))
+            self.set_piece_on_square(letter, 1, Bishop(WHITE))
+            self.set_piece_on_square(letter, 8, Bishop(BLACK))
         for letter in ['b', 'g']:
-            self.set_square_content(letter, 1, Knight(WHITE))
-            self.set_square_content(letter, 8, Knight(BLACK))
+            self.set_piece_on_square(letter, 1, Knight(WHITE))
+            self.set_piece_on_square(letter, 8, Knight(BLACK))
         for letter in ['c', 'f']:
-            self.set_square_content(letter, 1, Rook(WHITE))
-            self.set_square_content(letter, 8, Rook(BLACK))
-        self.set_square_content('d', 1, Queen(WHITE))
-        self.set_square_content('e', 8, Queen(BLACK))
-        self.set_square_content('e', 1, King(WHITE))
-        self.set_square_content('d', 8, King(BLACK))
-
-    def get_square(self, l, n):
-        x_axis, y_axis = convert_l_n_to_indexes(l, n)
-        return self.board[x_axis][y_axis]
+            self.set_piece_on_square(letter, 1, Rook(WHITE))
+            self.set_piece_on_square(letter, 8, Rook(BLACK))
+        self.set_piece_on_square('d', 1, Queen(WHITE))
+        self.set_piece_on_square('e', 8, Queen(BLACK))
+        self.set_piece_on_square('e', 1, King(WHITE))
+        self.set_piece_on_square('d', 8, King(BLACK))
 
     def check_if_occupied(self, l, n):
         x_axis, y_axis = convert_l_n_to_indexes(l, n)
-        return self.board[x_axis][y_axis].get_occupied()
+        return self.board[x_axis][y_axis].is_occupied()
 
     def execute_move(self, field_chosen, destination, piece_chosen):
         king_killed, color_loosing = False, None
@@ -59,23 +55,27 @@ class Board:
         if piece_killed and isinstance(piece_killed, King):
             color_loosing = piece_killed.get_color()
             king_killed = True
-        self.set_square_content(destination[0], destination[1], piece_chosen)
+        self.set_piece_on_square(destination[0], destination[1], piece_chosen)
         self.get_square(field_chosen[0], field_chosen[1]).set_square_free()
         return king_killed, color_loosing
 
-    def get_square_content(self, l, n):
+    def get_square(self, l, n):
+        x_axis, y_axis = convert_l_n_to_indexes(l, n)
+        return self.board[x_axis][y_axis]
+
+    def get_piece_from_square(self, l: str, n: int):
         x_axis, y_axis = convert_l_n_to_indexes(l, n)
         return self.board[x_axis][y_axis].get_piece()
 
-    def set_square_content(self, l, n, piece):
+    def set_piece_on_square(self, l: str, n: int, piece):
         x_axis, y_axis = convert_l_n_to_indexes(l, n)
         o = self.board[x_axis][y_axis]
-        o.set_square_with_piece(piece)
+        o.set_piece(piece)
 
     def validate_piece_choice(self, field_chosen, current_player):
         letter_from = field_chosen[0]
         number_from = field_chosen[1]
-        piece_chosen = self.get_square_content(letter_from, number_from)
+        piece_chosen = self.get_piece_from_square(letter_from, number_from)
         if not piece_chosen:
             print("There is no piece on this field!")
             return False
@@ -105,7 +105,7 @@ class Square:
     def get_number(self):
         return self.number
 
-    def get_occupied(self):
+    def is_occupied(self):
         return self.occupied
 
     def get_piece(self):
@@ -114,7 +114,7 @@ class Square:
         elif self.occupied == True:
             return self.piece
 
-    def set_square_with_piece(self, piece):
+    def set_piece(self, piece):
         self.piece = piece
         self.occupied = True
 
