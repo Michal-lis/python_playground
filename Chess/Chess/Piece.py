@@ -25,11 +25,14 @@ class Piece:
         char_num = num + 6 if color == WHITE else num
         return " " + chr(char_num)
 
-    def get_possible_moves(self, current_field, board, modifications, limit=None):
-        possible_moves = []
+    def prepare_x_y_initial(self, current_field):
         letter = current_field[0]
         number = current_field[1]
-        x_initial, y_initial = convert_l_n_to_indexes(letter, number)
+        return convert_l_n_to_indexes(letter, number)
+
+    def get_possible_moves(self, current_field, board, modifications, limit=None):
+        x_initial, y_initial = self.prepare_x_y_initial(current_field)
+        possible_moves = []
         for modification in modifications:
             x = x_initial
             y = y_initial
@@ -86,14 +89,18 @@ class Pawn(Piece):
     def __init__(self, color):
         name = "Pawn"
         sign = self.calculate_sign(9817, color)
-        super().__init__(name, sign, color)
+        super(Pawn, self).__init__(name, sign, color)
+        self.en_passant = False
 
-    def get_possible_moves(self, current_field, board, modifications=None, limit=None):
+    def set_en_passant_possible(self):
+        self.en_passant = True
+
+    def get_en_passant_possible(self):
+        return self.en_passant
+
+    def get_possible_moves(self, current_field, board):
+        x_initial, y_initial = super(Pawn, self).prepare_x_y_initial(current_field)
         possible_moves = []
-        letter = current_field[0]
-        number = current_field[1]
-        x_initial, y_initial = convert_l_n_to_indexes(letter, number)
-
         if self.get_color() == BLACK:
             sign = -1
         else:
@@ -137,6 +144,9 @@ class Pawn(Piece):
             if piece and piece.get_color() != self.color:
                 possible_moves.append((l, n))
 
+        # en_passant
+        pass
+
         return possible_moves
 
 
@@ -145,16 +155,12 @@ class Knight(Piece):
     def __init__(self, color):
         name = "Knight"
         sign = self.calculate_sign(9816, color)
-        super().__init__(name, sign, color)
+        super(Knight, self).__init__(name, sign, color)
 
-    def get_possible_moves(self, current_field, board, modifications=None, limit=None):
+    def get_possible_moves(self, current_field, board):
         possible_moves = []
-        letter = current_field[0]
-        number = current_field[1]
-        x_initial, y_initial = convert_l_n_to_indexes(letter, number)
-
-        """ 8 possible moves:
-        no difference if attack or move
+        x_initial, y_initial = super(Knight, self).prepare_x_y_initial(current_field)
+        """
          # #
         #   #
           O
@@ -181,11 +187,10 @@ class Bishop(Piece):
     def __init__(self, color):
         name = "Bishop"
         sign = self.calculate_sign(9814, color)
-        super().__init__(name, sign, color)
+        super(Bishop, self).__init__(name, sign, color)
 
-    def get_possible_moves(self, current_field, board, modifications=None, limit=None):
+    def get_possible_moves(self, current_field, board):
         """
-        possible moves:
                   #
                   #
                   #
@@ -194,8 +199,8 @@ class Bishop(Piece):
                   #
                   #
         """
-        modifications = (self.go_left, self.go_right, self.go_down, self.go_up)
-        return super().get_possible_moves(current_field, board, modifications)
+        movement = (self.go_left, self.go_right, self.go_down, self.go_up)
+        return super(Bishop, self).get_possible_moves(current_field, board, movement)
 
 
 class Rook(Piece):
@@ -203,19 +208,18 @@ class Rook(Piece):
     def __init__(self, color):
         name = "Rook"
         sign = self.calculate_sign(9815, color)
-        super().__init__(name, sign, color)
+        super(Rook, self).__init__(name, sign, color)
 
-    def get_possible_moves(self, current_field, board, modifications=None, limit=None):
+    def get_possible_moves(self, current_field, board):
         """
-        possible moves:
                #     #
                 #   #
                   O
                 #   #
-               #     # 
+               #     #
         """
-        modifications = [self.go_left_up, self.go_right_up, self.go_left_down, self.go_right_down]
-        return super().get_possible_moves(current_field, board, modifications)
+        movement = [self.go_left_up, self.go_right_up, self.go_left_down, self.go_right_down]
+        return super(Rook, self).get_possible_moves(current_field, board, movement)
 
 
 class Queen(Piece):
@@ -223,20 +227,19 @@ class Queen(Piece):
     def __init__(self, color):
         name = "Queen"
         sign = self.calculate_sign(9813, color)
-        super().__init__(name, sign, color)
+        super(Queen, self).__init__(name, sign, color)
 
-    def get_possible_moves(self, current_field, board, modifications=None, limit=None):
+    def get_possible_moves(self, current_field, board):
         """
-        possible moves:
            #  #  #
             # # #
         # # # O # # #
             # # #
            #  #  #
         """
-        modifications = (self.go_left_up, self.go_right_up, self.go_left_down, self.go_right_down,
-                         self.go_left, self.go_right, self.go_down, self.go_up)
-        return super().get_possible_moves(current_field, board, modifications)
+        movement = (self.go_left_up, self.go_right_up, self.go_left_down, self.go_right_down,
+                    self.go_left, self.go_right, self.go_down, self.go_up)
+        return super(Queen, self).get_possible_moves(current_field, board, movement)
 
 
 class King(Piece):
@@ -244,29 +247,28 @@ class King(Piece):
     def __init__(self, color):
         name = "King"
         sign = self.calculate_sign(9812, color)
-        super().__init__(name, sign, color)
+        super(King, self).__init__(name, sign, color)
         self.en_passant_possible = True
 
-    def get_possible_moves(self, current_field, board, modifications=None, limit=None):
+    def get_possible_moves(self, current_field, board):
         """
-        possible moves:
             # # #
             # O #
             # # #
         """
-        modifications = (self.go_left_up, self.go_right_up, self.go_left_down, self.go_right_down,
-                         self.go_left, self.go_right, self.go_down, self.go_up)
+        movement = (self.go_left_up, self.go_right_up, self.go_left_down, self.go_right_down,
+                    self.go_left, self.go_right, self.go_down, self.go_up)
         limit = 1
-        possible_moves = super().get_possible_moves(current_field, board, modifications, limit)
+        possible_moves = super(King, self).get_possible_moves(current_field, board, movement, limit)
         if self.get_color() == WHITE:
-            en_passant_left_possible = self.check_en_passant_possible(board, 'e', 1, WHITE, ['b', 'c', 'd'])
-            en_passant_right_possible = self.check_en_passant_possible(board, 'e', 1, WHITE, ['g', 'f'])
+            self.check_castling_possible(board, 'a', 1, WHITE, ['b', 'c', 'd'], possible_moves)
+            self.check_castling_possible(board, 'h', 1, WHITE, ['g', 'f'], possible_moves)
         elif self.get_color() == BLACK:
-            en_passant_left_possible = self.check_en_passant_possible(board, 'd', 8, BLACK, ['b', 'c'])
-            en_passant_right_possible = self.check_en_passant_possible(board, 'd', 8, BLACK, ['g', 'f', 'e'])
+            self.check_castling_possible(board, 'a', 8, BLACK, ['b', 'c'], possible_moves)
+            self.check_castling_possible(board, 'h', 8, BLACK, ['g', 'f', 'e'], possible_moves)
         return possible_moves
 
-    def check_en_passant_possible(self, board, l, n, color, to_be_empty):
+    def check_castling_possible(self, board, l, n, color, to_be_empty, possible_moves):
         fields_empty = True
         for letter in to_be_empty:
             if board.get_piece_from_square(letter, n):
@@ -275,4 +277,6 @@ class King(Piece):
                 isinstance(board.get_piece_from_square(l, n), Bishop) and \
                 board.get_piece_from_square(l, n).get_color() == color and \
                 fields_empty:
+            print("Castling possible!")
+            possible_moves.append((l, n))
             return True

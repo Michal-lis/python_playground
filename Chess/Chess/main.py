@@ -15,7 +15,7 @@ When you build your class with good interface and good data structures the rest 
 
 def main():
     cmdlineargs = sys.argv
-    if cmdlineargs[1] in ['-h', '-help']:
+    if len(cmdlineargs) > 1 and cmdlineargs[1] in['-h', '-help']:
         with open("instruction.txt", 'r') as file:
             instruction = file.read()
             print(instruction)

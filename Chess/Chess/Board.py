@@ -49,15 +49,31 @@ class Board:
         x_axis, y_axis = convert_l_n_to_indexes(l, n)
         return self.board[x_axis][y_axis].is_occupied()
 
-    def execute_move(self, field_chosen, destination, piece_chosen):
-        king_killed, color_loosing = False, None
+    def check_is_king_alive(self, destination, king_killed=False, color_loosing=None):
         piece_killed = self.get_square(destination[0], destination[1]).get_piece()
         if piece_killed and isinstance(piece_killed, King):
             color_loosing = piece_killed.get_color()
             king_killed = True
-        self.set_piece_on_square(destination[0], destination[1], piece_chosen)
-        self.get_square(field_chosen[0], field_chosen[1]).set_square_free()
         return king_killed, color_loosing
+
+    def check_if_castling(self, field_chosen, destination):
+        if (field_chosen == ('e', 1) and destination in [('a', 1), ('h', 1)]) or (
+                field_chosen == ('d', 8) and destination in [('a', 8), ('h', 8)]):
+            return True
+        return False
+
+    def execute_move(self, field_chosen, destination, piece_chosen):
+        castling = self.check_if_castling(field_chosen, destination)
+        if (isinstance(piece_chosen, Pawn) and destination[1] == field_chosen[1] + 2):
+            pass
+
+        if not castling:
+            self.set_piece_on_square(destination[0], destination[1], piece_chosen)
+            self.get_square(field_chosen[0], field_chosen[1]).set_square_free()
+        else:
+            temp_piece = self.get_piece_from_square(destination[0], destination[1])
+            self.set_piece_on_square(destination[0], destination[1], piece_chosen)
+            self.set_piece_on_square(field_chosen[0], field_chosen[1], temp_piece)
 
     def get_square(self, l, n):
         x_axis, y_axis = convert_l_n_to_indexes(l, n)

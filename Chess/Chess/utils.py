@@ -12,7 +12,7 @@ def convert_l_n_to_indexes(letter, number):
     return x_axis, y_axis
 
 
-def choose_field(text):
+def choose_field(text) -> (str, int):
     valid_input = False
     while not valid_input:
         chosen_field = input(text)

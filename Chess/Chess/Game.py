@@ -43,8 +43,8 @@ class Game:
                 destination = current_player.choose_a_destination()
                 if destination in possible_moves:
                     valid_destination_chosen = True
-            king_killed, color_loosing = self.get_board().execute_move(field_chosen, destination, piece_chosen)
-
+            king_killed, color_loosing = self.get_board().check_is_king_alive(destination)
+            self.get_board().execute_move(field_chosen, destination, piece_chosen)
             self.check_both_mates(destination)
             self.check_promotion()
         self.show_board()
@@ -65,6 +65,7 @@ class Game:
                     self.get_board().set_piece_on_square(square.get_letter(), square.get_number(), Queen(BLACK))
 
     def check_both_mates(self, destination):
+        defending_king_location, defending_king = None, None
         future_piece_chosen = self.get_board().get_piece_from_square(destination[0], destination[1])
         color_attacking = future_piece_chosen.get_color()
         color_defending = BLACK if color_attacking == WHITE else WHITE
@@ -120,6 +121,7 @@ class Game:
     def show_board(self):
         print(self.board)
 
+
 class Player:
     newid = itertools.count()
 
@@ -127,7 +129,6 @@ class Player:
         self.id = next(Player.newid)
         self.name = name
         self.color = color
-
 
     def __repr__(self) -> str:
         return str(self.id) + " " + self.name + " " + self.color
