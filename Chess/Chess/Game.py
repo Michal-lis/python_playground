@@ -1,7 +1,7 @@
 import itertools
 from Board import Board
 from Piece import Piece, King, Pawn, Queen
-from utils import WHITE, BLACK, choose_field
+from utils import WHITE, BLACK, choose_field, ValidationException
 
 
 class Game:
@@ -40,9 +40,15 @@ class Game:
 
             valid_destination_chosen = False
             while not valid_destination_chosen:
-                destination = current_player.choose_a_destination()
-                if destination in possible_moves:
-                    valid_destination_chosen = True
+                try:
+                    destination = current_player.choose_a_destination()
+                    if destination in possible_moves:
+                        valid_destination_chosen = True
+                    else:
+                        raise ValidationException()
+                except ValidationException:
+                    print("Not a valid choice.")
+                    continue
             king_killed, color_loosing = self.get_board().check_is_king_alive(destination)
             self.get_board().execute_move(field_chosen, destination, piece_chosen)
             self.check_both_mates(destination)

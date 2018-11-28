@@ -21,7 +21,7 @@ logger = logging.getLogger(__name__)
 directory_MIT = 'C:/Users/Michu/Videos/Python_Videos/MIT/'
 playlists_MIT = {
     'Introduction to Algorithms': 'https://www.youtube.com/playlist?list=PLrwuNGSwGLHc4uasQP9_9ZgLQo71PRw2O'}
-
+videos_urls = ['https://www.youtube.com/watch?v=-UG11JzWzMY']
 playlists_pydata = {
     'PyData Seattle 2017': 'https://www.youtube.com/playlist?list=PLGVZCDnMOq0rxoq9Nx0B4tqtr891vaCn7',
     'Pandas': 'https://www.youtube.com/playlist?list=PLGVZCDnMOq0oywykwgVAcGvsGzagyMbwS',
@@ -104,6 +104,24 @@ def dl_user_playlist():
     print("Downloading complete")
 
 
+def dl_videos_from_list(video_list):
+    download_path = os.path.dirname(os.path.realpath(__file__))
+    length = len(video_list)
+    print('Total videos found: ', length)
+    print('Starting download')
+    print('Complete:')
+    for i, link in enumerate(video_list):
+        print_progress(i, length)
+        yt = YouTube(link)
+        dl_stream = yt.streams.filter(
+            progressive=True, subtype='mp4',
+        ).order_by('resolution').desc().first()
+        logger.debug('download path: %s', download_path)
+        dl_stream.download(download_path)
+        logger.debug('download complete')
+        print_progress(i + 1, length)
+
+
 def dl_dict_videos(directory, playlists):
     i = 1
     for name in playlists:
@@ -122,7 +140,7 @@ def dl_dict_videos(directory, playlists):
 
 if __name__ == '__main__':
     try:
-        dl_dict_videos(directory_MIT, playlists_pydata)
+        dl_videos_from_list(videos_urls)
     except urllib.error.URLError:
         sys.stdout.write("You have no Internet Connection.")
         exit()
