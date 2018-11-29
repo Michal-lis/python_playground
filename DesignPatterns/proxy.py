@@ -156,6 +156,8 @@ class NoCash(ATMState):
         return "No cash state!"
 
 
+class ATMProxy
+
 a = ATMMachine()
 a.present_state()
 a.insert_card()
