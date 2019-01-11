@@ -59,7 +59,7 @@ def graph_data(c):
 
 
 style.use('fivethirtyeight')
-conn = sqlite3.connect('example2.db', timeout=10)
+conn = sqlite3.connect('cinema.db', timeout=10)
 c = conn.cursor()
 # create_table(c)
 # simple_data_entry(c)

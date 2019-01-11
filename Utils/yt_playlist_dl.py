@@ -18,10 +18,7 @@ from pytube.__main__ import YouTube
 
 logger = logging.getLogger(__name__)
 
-directory_MIT = 'C:/Users/Michu/Videos/Python_Videos/MIT/'
-playlists_MIT = {
-    'Introduction to Algorithms': 'https://www.youtube.com/playlist?list=PLrwuNGSwGLHc4uasQP9_9ZgLQo71PRw2O'}
-videos_urls = ['https://www.youtube.com/watch?v=-UG11JzWzMY']
+videos_urls = ['https://www.youtube.com/watch?v=-Xn6IDytVGw']
 playlists_pydata = {
     'PyData Seattle 2017': 'https://www.youtube.com/playlist?list=PLGVZCDnMOq0rxoq9Nx0B4tqtr891vaCn7',
     'Pandas': 'https://www.youtube.com/playlist?list=PLGVZCDnMOq0oywykwgVAcGvsGzagyMbwS',
@@ -140,7 +137,7 @@ def dl_dict_videos(directory, playlists):
 
 if __name__ == '__main__':
     try:
-        dl_videos_from_list(videos_urls)
+        dl_videos_from_list(uc_British_col_machine_learning)
     except urllib.error.URLError:
         sys.stdout.write("You have no Internet Connection.")
         exit()

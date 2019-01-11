@@ -53,7 +53,7 @@ def del_and_update(conn, c):
     [print(row) for row in c.fetchall()]
 
 
-conn = sqlite3.connect('example2.db', timeout=10)
+conn = sqlite3.connect('cinema.db', timeout=10)
 c = conn.cursor()
 create_table(c)
 unix = int(time.time())
